@@ -28,6 +28,7 @@ async function run() {
       await client.connect();
       
     const projectsDataCollection = client.db("crowdFundingDB").collection("projectsData");
+    const donationDataCollection = client.db("crowdFundingDB").collection("donation");
 
 
     app.get("/projects", async (req, res) => {
@@ -45,6 +46,14 @@ async function run() {
     app.post("/projects", async (req, res) => {
       const project = req.body;
       const result = await projectsDataCollection.insertOne(project);
+      res.send(result);
+    });
+
+    // donation details api 
+    app.post("/donation/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await donationDataCollection.insertOne(query);
       res.send(result);
     })
 
