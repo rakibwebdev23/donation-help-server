@@ -50,10 +50,9 @@ async function run() {
     });
 
     // donation details api 
-    app.post("/donation/:id", async (req, res) => {
-      const id = req.params.id;
-      const query = { _id: new ObjectId(id) };
-      const result = await donationDataCollection.insertOne(query);
+    app.post("/donation", async (req, res) => {
+      const donation = req.body;
+      const result = await donationDataCollection.insertOne(donation);
       res.send(result);
     })
 
