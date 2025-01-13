@@ -29,6 +29,7 @@ async function run() {
       
     const projectsDataCollection = client.db("crowdFundingDB").collection("projectsData");
     const donationDataCollection = client.db("crowdFundingDB").collection("donation");
+    const usersCollection = client.db("crowdFundingDB").collection("users");
 
 
     app.get("/projects", async (req, res) => {
@@ -53,6 +54,18 @@ async function run() {
     app.post("/donation", async (req, res) => {
       const donation = req.body;
       const result = await donationDataCollection.insertOne(donation);
+      res.send(result);
+    });
+
+    // user related api 
+    app.post("/users", async (req, res) => {
+      const user = req.body;
+      const query = { email: user.email }
+      const existingUser = await usersCollection.findOne(query);
+      if (existingUser) {
+        return res.send ({message: "User Already exist", insertedId: null});
+      }
+      const result = await usersCollection.insertOne(user);
       res.send(result);
     })
 
