@@ -57,17 +57,31 @@ async function run() {
       res.send(result);
     });
 
+    app.get("/donation/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { email: email };
+      const result = await donationDataCollection.find(query).toArray();
+      res.send(result);
+    });
+
+    app.delete("/donation/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await donationDataCollection.deleteOne(query);
+      res.send(result);
+    });
+
     // user related api 
     app.post("/users", async (req, res) => {
       const user = req.body;
       const query = { email: user.email }
       const existingUser = await usersCollection.findOne(query);
       if (existingUser) {
-        return res.send ({message: "User Already exist", insertedId: null});
+        return res.send({ message: "User Already exist", insertedId: null });
       }
       const result = await usersCollection.insertOne(user);
       res.send(result);
-    })
+    });
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
