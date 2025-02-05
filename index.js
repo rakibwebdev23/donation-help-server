@@ -30,6 +30,7 @@ async function run() {
     const projectsDataCollection = client.db("crowdFundingDB").collection("projectsData");
     const donationDataCollection = client.db("crowdFundingDB").collection("donation");
     const usersCollection = client.db("crowdFundingDB").collection("users");
+    const contactCollection = client.db("crowdFundingDB").collection("contact");
 
 
     app.get("/projects", async (req, res) => {
@@ -50,13 +51,7 @@ async function run() {
       res.send(result);
     });
 
-    // donation details api 
-    app.post("/donation", async (req, res) => {
-      const donation = req.body;
-      const result = await donationDataCollection.insertOne(donation);
-      res.send(result);
-    });
-
+    // donation details api
     app.get("/donation/:email", async (req, res) => {
       const email = req.params.email;
       const query = { email: email };
@@ -64,9 +59,15 @@ async function run() {
       res.send(result);
     });
 
+    app.post("/donation", async (req, res) => {
+      const donation = req.body;
+      const result = await donationDataCollection.insertOne(donation);
+      res.send(result);
+    });
+
     app.delete("/donation/:id", async (req, res) => {
       const id = req.params.id;
-      const query = { _id: new ObjectId(id) };
+      const query = { _id: new ObjectId(id)};
       const result = await donationDataCollection.deleteOne(query);
       res.send(result);
     });
@@ -80,6 +81,13 @@ async function run() {
         return res.send({ message: "User Already exist", insertedId: null });
       }
       const result = await usersCollection.insertOne(user);
+      res.send(result);
+    });
+
+    // contact related api 
+    app.post("/contact", async (req, res) => { 
+      const message = req.body;
+      const result = await contactCollection.insertOne(message);
       res.send(result);
     });
 
